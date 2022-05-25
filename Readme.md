@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
 * Студент: [Makeev Alex](https://up.htmlacademy.ru/ecmascript/17/user/2031287).
-* Наставник: `Неизвестно`.
+* Наставник: [Владислав Молчанов](https://htmlacademy.ru/profile/id137398).
 
 ---
 
