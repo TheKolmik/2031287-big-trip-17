@@ -1,8 +1,9 @@
 import {createElement} from '../render.js';
 
-// форма создания ?
+const createCreateFormViewTemplate = (point = {}) => {
+  const {description ='', offers = ''} = point;
 
-const createCreateFormViewTemplate = () => `
+  return (`
   <form class="event event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
@@ -103,45 +104,45 @@ const createCreateFormViewTemplate = () => `
           <div class="event__offer-selector">
             <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
             <label class="event__offer-label" for="event-offer-luggage-1">
-              <span class="event__offer-title">Add luggage</span>
+              <span class="event__offer-title">${offers.title}</span>
               &plus;&euro;&nbsp;
-              <span class="event__offer-price">30</span>
+              <span class="event__offer-price">${offers.price}</span>
             </label>
           </div>
 
           <div class="event__offer-selector">
             <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox" name="event-offer-comfort" checked>
             <label class="event__offer-label" for="event-offer-comfort-1">
-              <span class="event__offer-title">Switch to comfort class</span>
+              <span class="event__offer-title">${offers.title}</span>
               &plus;&euro;&nbsp;
-              <span class="event__offer-price">100</span>
+              <span class="event__offer-price">${offers.price}</span>
             </label>
           </div>
 
           <div class="event__offer-selector">
             <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal">
             <label class="event__offer-label" for="event-offer-meal-1">
-              <span class="event__offer-title">Add meal</span>
+              <span class="event__offer-title">${offers.title}</span>
               &plus;&euro;&nbsp;
-              <span class="event__offer-price">15</span>
+              <span class="event__offer-price">${offers.price}</span>
             </label>
           </div>
 
           <div class="event__offer-selector">
             <input class="event__offer-checkbox  visually-hidden" id="event-offer-seats-1" type="checkbox" name="event-offer-seats">
             <label class="event__offer-label" for="event-offer-seats-1">
-              <span class="event__offer-title">Choose seats</span>
+              <span class="event__offer-title">${offers.title}</span>
               &plus;&euro;&nbsp;
-              <span class="event__offer-price">5</span>
+              <span class="event__offer-price">${offers.price}</span>
             </label>
           </div>
 
           <div class="event__offer-selector">
             <input class="event__offer-checkbox  visually-hidden" id="event-offer-train-1" type="checkbox" name="event-offer-train">
             <label class="event__offer-label" for="event-offer-train-1">
-              <span class="event__offer-title">Travel by train</span>
+              <span class="event__offer-title">${offers.title}</span>
               &plus;&euro;&nbsp;
-              <span class="event__offer-price">40</span>
+              <span class="event__offer-price">${offers.price}</span>
             </label>
           </div>
         </div>
@@ -149,7 +150,7 @@ const createCreateFormViewTemplate = () => `
 
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">Geneva is a city in Switzerland that lies at the southern tip of expansive Lac Léman (Lake Geneva). Surrounded by the Alps and Jura mountains, the city has views of dramatic Mont Blanc.</p>
+        <p class="event__destination-description">${description}</p>
 
         <div class="event__photos-container">
           <div class="event__photos-tape">
@@ -163,7 +164,8 @@ const createCreateFormViewTemplate = () => `
       </section>
     </section>
   </form>
-</li>`;
+</li>`);
+};
 
 export default class CreateFormView {
   getTemplate() {
