@@ -6,6 +6,7 @@ const generatePointType = () => {
   return pointType[randomIndex];
 };
 
+
 const generateDescriptions = () => {
   const descriptions = [
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
@@ -18,7 +19,6 @@ const generateDescriptions = () => {
     'Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat.',
     'Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.',
   ];
-
   const randomIndex = getRandomInteger(0, descriptions.length - 1);
 
   return descriptions[randomIndex];
@@ -56,12 +56,12 @@ const generateOffer = () => {
   return someOffers[randomIndex];
 };
 
-// const Date = ['2019-07-10T22:55:56.845Z', '2021-09-11T11:22:13.375Z', '2015-06-11T11:22:13.375Z', '2017-04-11T11:22:13.375Z', '2020-09-11T11:22:13.375Z'];
+const Date = ['2019-07-10T22:55:56.845Z', '2021-09-12T11:22:13.375Z', '2015-06-09T11:22:13.375Z', '2017-04-08T11:22:13.375Z', '2020-09-07T11:22:13.375Z'];
 
-// const generateDate = () => {
-//   const randomIndex = getRandomInteger(0,someOffers.length-1);
-//   return Date[randomIndex];
-// };
+const generateDate = () => {
+  const randomIndex = getRandomInteger(0,someOffers.length-1);
+  return Date[randomIndex];
+};
 
 export const generatePoint = () => ({
   'basePrice': 1100,
@@ -73,6 +73,6 @@ export const generatePoint = () => ({
   'offers': generateOffer(),
   'type': generatePointType(),
   'description': generateDescriptions(),
-  // 'dueDate': generateDate()
+  'dueDate': generateDate()
 });
 

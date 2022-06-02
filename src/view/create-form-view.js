@@ -168,8 +168,12 @@ const createCreateFormViewTemplate = (point = {}) => {
 };
 
 export default class CreateFormView {
+  constructor(point) {
+    this.point = point;
+  }
+
   getTemplate() {
-    return createCreateFormViewTemplate();
+    return createCreateFormViewTemplate(this.point);
   }
 
   getElement() {

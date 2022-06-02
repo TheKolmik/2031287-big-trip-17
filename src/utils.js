@@ -1,4 +1,4 @@
-// import dayjs from 'dayjs';
+import dayjs from 'dayjs';
 
 const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
@@ -7,8 +7,6 @@ const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
-// const humanizePointDueDate = (dueDate) => dayjs(dueDate).form('D MMMM');
+const humanizePointDueDate = (dueDate) => dayjs(dueDate).format('D MMMM');
 
-export {getRandomInteger,
-  // humanizePointDueDate
-};
+export {getRandomInteger, humanizePointDueDate};

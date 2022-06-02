@@ -146,7 +146,7 @@ const createEditFormViewTemplate = (point = {}) => {
           <label class="event__offer-label" for="event-offer-train-1">
             <span class="event__offer-title">${offers.title}</span>
             +€&nbsp;
-            <span class="event__offer-price">=${offers.price}</span>
+            <span class="event__offer-price">${offers.price}</span>
           </label>
         </div>
       </div>
@@ -161,8 +161,13 @@ const createEditFormViewTemplate = (point = {}) => {
 };
 
 export default class EditFormView {
+
+  constructor(point) {
+    this.point = point;
+  }
+
   getTemplate() {
-    return createEditFormViewTemplate();
+    return createEditFormViewTemplate(this.point);
   }
 
   getElement() {

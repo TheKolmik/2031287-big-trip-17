@@ -1,23 +1,23 @@
 import {createElement} from '../render.js';
-// import {humanizePointDueDate} from '../utils.js';
+import {humanizePointDueDate} from '../utils.js';
 
 
 const createPointViewTemplate = (point = {}) => {
   const {
-    // dueDate,
+    dueDate,
     type = '', offers = '', basePrice = '', isFavorite = null, destination = ''} = point;
 
   const isFavoriteClassName = isFavorite
     ? 'event__favorite-btn--active'
     : 'event__favorite-btn--';
 
-  // const date = dueDate !== null
-  //   ? humanizePointDueDate(dueDate)
-  //   : '';
+  const date = dueDate !== null
+    ? humanizePointDueDate(dueDate)
+    : '';
 
   return (`<li class="trip-events__item">
 <div class="event">
-  <time class="event__date" datetime="2019-03-18">18 March</time>
+  <time class="event__date" datetime="2019-03-18">${date}</time>
   <div class="event__type">
     <img class="event__type-icon" src="img/icons/${type}.png" alt="Event type icon" width="42" height="42">
   </div>
