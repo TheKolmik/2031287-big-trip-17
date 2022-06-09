@@ -10,34 +10,37 @@ import NoPointView from '../view/no-point-view.js';
 const POINT_COUNT_PER_STEP = 8;
 
 export default class ListPresenter {
-  listComponent = new EventListView();
-  createFormComponent = new FormListView();
-  loadMoreButton = new LoadMoreButton();
+  #listComponent = new EventListView();
+  #createFormComponent = new FormListView();
+  #loadMoreButton = new LoadMoreButton();
   #renderPointCount = POINT_COUNT_PER_STEP;
   #noPointView = new NoPointView();
+  #listContainer = null;
+  #pointModel = null;
+  #listPoint = null;
 
   constructor(listContainer, pointModel) {
-    this.listContainer = listContainer;
-    this.pointModel = pointModel;
+    this.#listContainer = listContainer;
+    this.#pointModel = pointModel;
   }
 
   init = () => {
-    this.listPoint = [...this.pointModel.getPoint()];
+    this.#listPoint = [...this.#pointModel.point];
     this.#renderList();
   };
 
   #handleLoadMoreButtonClick = (evt) => {
     evt.preventDefault();
-    this.listPoint
+    this.#listPoint
       .slice(this.#renderPointCount, this.#renderPointCount + POINT_COUNT_PER_STEP)
       .forEach((task) => this.#renderPoint(task));
 
     this.#renderPointCount += POINT_COUNT_PER_STEP;
 
     //Почему button LOAD MORE не снизу при клике на него? Т.е. почему задачи не появляються перед ним?
-    if (this.#renderPointCount >= this.listPoint.length) {
-      this.loadMoreButton.getElement().remove();
-      this.loadMoreButton.removeElement();
+    if (this.#renderPointCount >= this.#listPoint.length) {
+      this.#loadMoreButton.element.remove();
+      this.#loadMoreButton.removeElement();
     }
   };
 
@@ -46,11 +49,11 @@ export default class ListPresenter {
     const editForm = new EditFormView(point);
 
     const replacePointToEditForm = () => {
-      this.listComponent.getElement().replaceChild(editForm.getElement(), pointComponent.getElement());
+      this.#listComponent.element.replaceChild(editForm.element, pointComponent.element);
     };
 
     const replaceEditFormToPoint = () => {
-      this.listComponent.getElement().replaceChild(pointComponent.getElement(), editForm.getElement());
+      this.#listComponent.element.replaceChild(pointComponent.element, editForm.element);
     };
 
     const onEscKeyDown = (evt) => {
@@ -61,40 +64,40 @@ export default class ListPresenter {
       }
     };
 
-    editForm.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+    editForm.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
       replaceEditFormToPoint();
     });
 
-    pointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+    pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
       replacePointToEditForm();
       document.addEventListener('keydown', onEscKeyDown);
     });
 
-    editForm.getElement().addEventListener('submit', (evt) => {
+    editForm.element.addEventListener('submit', (evt) => {
       evt.preventDefault();
       replaceEditFormToPoint();
     });
 
-    render(pointComponent, this.listComponent.getElement());
+    render(pointComponent, this.#listComponent.element);
   };
 
   #renderList = () => {
-    render (this.createFormComponent, this.listContainer);
-    render(this.listComponent, this.listContainer);
-    // render(new CreateFormView(this.listPoint[0]), this.createFormComponent.getElement());
+    render (this.#createFormComponent, this.#listContainer);
+    render(this.#listComponent, this.#listContainer);
+    // render(new CreateFormView(this.#listPoint[0]), this.#createFormComponent.getElement());
 
     // Зачем тут нужен код is.Archive ?
-    if (this.listPoint.every((point) => point.isArchive)) {
-      render(this.#noPointView, this.listComponent.getElement());
+    if (this.#listPoint.every((point) => point.isArchive)) {
+      render(this.#noPointView, this.#listComponent.element);
     } else {
 
-      for (let i = 0; i < Math.min(this.listPoint.length, POINT_COUNT_PER_STEP); i++){
-        this.#renderPoint(this.listPoint[i]);
+      for (let i = 0; i < Math.min(this.#listPoint.length, POINT_COUNT_PER_STEP); i++){
+        this.#renderPoint(this.#listPoint[i]);
       }
-      if (this.listPoint.length > POINT_COUNT_PER_STEP) {
-        render(this.loadMoreButton, this.listComponent.getElement());
+      if (this.#listPoint.length > POINT_COUNT_PER_STEP) {
+        render(this.#loadMoreButton, this.#listComponent.element);
       }
-      this.loadMoreButton.getElement().addEventListener('click', this.#handleLoadMoreButtonClick);
+      this.#loadMoreButton.element.addEventListener('click', this.#handleLoadMoreButtonClick);
     }
   };
 }
