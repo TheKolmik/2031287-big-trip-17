@@ -316,7 +316,7 @@ main {
 
 .trip-events__msg {
   margin: 0;
-  margin-top: 280px;
+  margin-top: 35px;
   font-weight: 500;
   font-size: 44px;
   line-height: 60px;
@@ -831,3 +831,8 @@ main {
     padding-right: 20px; }
   .event__photo:not(:last-child) {
     margin-right: 5px; }
+
+  .btn-center {
+    display: flex;
+  justify-content: center;
+  }

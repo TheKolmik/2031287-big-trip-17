@@ -4,13 +4,13 @@ const createEventListViewTemplate = () => '<ul class="trip-events__list"></ul>';
 const createFormListViewTemplate = () => '<div class="create-form"></div>';
 
 export default class EventListView {
-  getTemplate() {
+  get template() {
     return createEventListViewTemplate();
   }
 
   getElement() {
     if (!this.element) {
-      this.element = createElement(this.getTemplate());
+      this.element = createElement(this.template);
     }
 
     return this.element;

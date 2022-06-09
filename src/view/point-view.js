@@ -59,13 +59,13 @@ export default class Point {
     this.point = point;
   }
 
-  getTemplate() {
+  get template() {
     return createPointViewTemplate(this.point);
   }
 
   getElement() {
     if (!this.element) {
-      this.element = createElement(this.getTemplate());
+      this.element = createElement(this.template);
     }
 
     return this.element;

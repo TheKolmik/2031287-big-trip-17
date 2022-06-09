@@ -172,13 +172,13 @@ export default class CreateFormView {
     this.point = point;
   }
 
-  getTemplate() {
+  get template() {
     return createCreateFormViewTemplate(this.point);
   }
 
   getElement() {
     if (!this.element) {
-      this.element = createElement(this.getTemplate());
+      this.element = createElement(this.template);
     }
 
     return this.element;

@@ -19,13 +19,13 @@ const createFilterViewTemplate = () => `
 `;
 
 export default class FilterView {
-  getTemplate() {
+  get template() {
     return createFilterViewTemplate();
   }
 
   getElement() {
     if (!this.element) {
-      this.element = createElement(this.getTemplate());
+      this.element = createElement(this.template);
     }
 
     return this.element;
