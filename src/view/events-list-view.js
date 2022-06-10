@@ -24,16 +24,16 @@ export default class EventListView {
 
 class FormListView {
   #element = null;
-  getTemplate() {
+  get template() {
     return createFormListViewTemplate();
   }
 
   get element() {
     if(!this.#element) {
-      this.#element = createElement(this.getTemplate());
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {

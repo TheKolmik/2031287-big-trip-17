@@ -84,7 +84,7 @@ export default class ListPresenter {
   #renderList = () => {
     render (this.#createFormComponent, this.#listContainer);
     render(this.#listComponent, this.#listContainer);
-    // render(new CreateFormView(this.#listPoint[0]), this.#createFormComponent.getElement());
+    // render(new CreateFormView(this.#listPoint[0]), this.#createFormComponent.element);
 
     // Зачем тут нужен код is.Archive ?
     if (this.#listPoint.every((point) => point.isArchive)) {
