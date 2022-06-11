@@ -106,8 +106,8 @@ const createEditFormViewTemplate = (point = {}) => {
 
       <div class="event__available-offers">
         <div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked="">
-          <label class="event__offer-label" for="event-offer-luggage-1">
+          <input class="event__offer-checkbox  visually-hidden" id="editf-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked="">
+          <label class="event__offer-label" for="editf-offer-luggage-1">
             <span class="event__offer-title">${offers.title}</span>
             +€&nbsp;
             <span class="event__offer-price">${offers.price}</span>
@@ -115,8 +115,8 @@ const createEditFormViewTemplate = (point = {}) => {
         </div>
 
         <div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox" name="event-offer-comfort" checked="">
-          <label class="event__offer-label" for="event-offer-comfort-1">
+          <input class="event__offer-checkbox  visually-hidden" id="editf-offer-comfort-1" type="checkbox" name="event-offer-comfort" checked="">
+          <label class="event__offer-label" for="editf-offer-comfort-1">
             <span class="event__offer-title">${offers.title}</span>
             +€&nbsp;
             <span class="event__offer-price">${offers.price}</span>
@@ -124,8 +124,8 @@ const createEditFormViewTemplate = (point = {}) => {
         </div>
 
         <div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal">
-          <label class="event__offer-label" for="event-offer-meal-1">
+          <input class="event__offer-checkbox  visually-hidden" id="editf-offer-meal-1" type="checkbox" name="event-offer-meal">
+          <label class="event__offer-label" for="editf-offer-meal-1">
             <span class="event__offer-title">${offers.title}</span>
             +€&nbsp;
             <span class="event__offer-price">${offers.price}</span>
@@ -133,8 +133,8 @@ const createEditFormViewTemplate = (point = {}) => {
         </div>
 
         <div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-seats-1" type="checkbox" name="event-offer-seats">
-          <label class="event__offer-label" for="event-offer-seats-1">
+          <input class="event__offer-checkbox  visually-hidden" id="editf-offer-seats-1" type="checkbox" name="event-offer-seats">
+          <label class="event__offer-label" for="editf-offer-seats-1">
             <span class="event__offer-title">${offers.title}</span>
             +€&nbsp;
             <span class="event__offer-price">${offers.price}</span>
@@ -142,8 +142,8 @@ const createEditFormViewTemplate = (point = {}) => {
         </div>
 
         <div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-train-1" type="checkbox" name="event-offer-train">
-          <label class="event__offer-label" for="event-offer-train-1">
+          <input class="event__offer-checkbox  visually-hidden" id="editf-offer-train-1" type="checkbox" name="event-offer-train">
+          <label class="event__offer-label" for="editf-offer-train-1">
             <span class="event__offer-title">${offers.title}</span>
             +€&nbsp;
             <span class="event__offer-price">${offers.price}</span>
@@ -161,24 +161,25 @@ const createEditFormViewTemplate = (point = {}) => {
 };
 
 export default class EditFormView {
+  #element = null;
 
   constructor(point) {
     this.point = point;
   }
 
-  getTemplate() {
+  get template() {
     return createEditFormViewTemplate(this.point);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }

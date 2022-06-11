@@ -10,11 +10,11 @@ const tripFilters = tripMain.querySelector('.trip-controls__filters');
 const pageMain = document.querySelector('.page-main');
 const tripEvents = pageMain.querySelector('.trip-events');
 
-const listPresenter = new ListPresenter();
 const pointModel = new PointModel();
+const listPresenter = new ListPresenter(tripEvents, pointModel);
 
 render(new FilterView(), tripFilters);
 
 render(new SortView(), tripEvents);
 
-listPresenter.init(tripEvents, pointModel);
+listPresenter.init();
