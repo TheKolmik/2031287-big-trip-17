@@ -77,7 +77,7 @@ export default class ListPresenter {
       evt.preventDefault();
       replaceEditFormToPoint();
     });
-
+    // сделать див кнопки под ul и вставить в рендере afterend
     render(pointComponent, this.#listComponent.element);
   };
 
@@ -86,8 +86,8 @@ export default class ListPresenter {
     render(this.#listComponent, this.#listContainer);
     // render(new CreateFormView(this.#listPoint[0]), this.#createFormComponent.element);
 
-    // Зачем тут нужен код is.Archive ?
     if (this.#listPoint.every((point) => point.isArchive)) {
+      // домашка:
       render(this.#noPointView, this.#listComponent.element);
     } else {
 
