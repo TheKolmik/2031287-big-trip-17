@@ -1,5 +1,7 @@
-import {createElement} from '../render.js';
-import {humanizePointDueDate} from '../utils.js';
+import AbstractView from '../framework/view/abstract-view.js';
+import {humanizePointDueDate,
+  // isTaskRepeating
+} from '../utils/point.js';
 
 
 const createPointViewTemplate = (point = {}) => {
@@ -11,9 +13,10 @@ const createPointViewTemplate = (point = {}) => {
     ? 'event__favorite-btn--active'
     : 'event__favorite-btn--';
 
-  const date = dueDate !== null
-    ? humanizePointDueDate(dueDate)
-    : '';
+  // const date = dueDate !== null
+  //   ? humanizePointDueDate(dueDate)
+  //   : '';
+  const date = humanizePointDueDate(dueDate);
 
   return (`<li class="trip-events__item">
 <div class="event">
@@ -54,25 +57,24 @@ const createPointViewTemplate = (point = {}) => {
 </li>`);
 };
 
-export default class Point {
-  #element = null;
+export default class Point extends AbstractView{
+  #point = null;
   constructor(point) {
-    this.point = point;
+    super();
+    this.#point = point;
   }
 
   get template() {
-    return createPointViewTemplate(this.point);
+    return createPointViewTemplate(this.#point);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
+  setEditClickHandler = (callback) => {
+    this._callback.editClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+  };
 
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
-  }
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.editClick();
+  };
 }

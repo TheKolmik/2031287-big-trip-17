@@ -1,45 +1,22 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 const createEventListViewTemplate = () => '<ul class="trip-events__list"></ul>';
-const createFormListViewTemplate = () => '<div class="create-form"></div>';
+// const createFormListViewTemplate = () => '<div class="create-form"></div>';
 
-export default class EventListView {
-  #element = null;
+export default class EventListView extends AbstractView {
+
   get template() {
     return createEventListViewTemplate();
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
-  }
 }
 
-class FormListView {
-  #element = null;
-  get template() {
-    return createFormListViewTemplate();
-  }
+// class FormListView extends AbstractView {
 
-  get element() {
-    if(!this.#element) {
-      this.#element = createElement(this.template);
-    }
+//   get template() {
+//     return createFormListViewTemplate();
+//   }
 
-    return this.#element;
-  }
+// }
 
-  removeElement() {
-    this.#element = null;
-  }
-
-}
-
-export {FormListView};
+// export {FormListView};
