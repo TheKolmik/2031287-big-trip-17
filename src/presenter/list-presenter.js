@@ -1,17 +1,18 @@
-import {render} from '../render.js';
+import {render, replace, remove} from '../framework/render.js';
 // import CreateFormView from '../view/create-form-view.js';
 import EditFormView from '../view/edit-form-view.js';
 import Point from '../view/point-view.js';
 import EventListView from '../view/events-list-view.js';
-import {FormListView}  from '../view/events-list-view.js';
+// import {FormListView}  from '../view/events-list-view.js';
 import LoadMoreButton from '../view/load-more-button-view.js';
 import NoPointView from '../view/no-point-view.js';
+import {RenderPosition} from '../framework/render.js';
 
 const POINT_COUNT_PER_STEP = 8;
 
 export default class ListPresenter {
   #listComponent = new EventListView();
-  #createFormComponent = new FormListView();
+  // #createFormComponent = new FormListView();
   #loadMoreButton = new LoadMoreButton();
   #renderPointCount = POINT_COUNT_PER_STEP;
   #noPointView = new NoPointView();
@@ -29,18 +30,15 @@ export default class ListPresenter {
     this.#renderList();
   };
 
-  #handleLoadMoreButtonClick = (evt) => {
-    evt.preventDefault();
+  #handleLoadMoreButtonClick = () => {
     this.#listPoint
       .slice(this.#renderPointCount, this.#renderPointCount + POINT_COUNT_PER_STEP)
       .forEach((task) => this.#renderPoint(task));
 
     this.#renderPointCount += POINT_COUNT_PER_STEP;
 
-    //Почему button LOAD MORE не снизу при клике на него? Т.е. почему задачи не появляються перед ним?
     if (this.#renderPointCount >= this.#listPoint.length) {
-      this.#loadMoreButton.element.remove();
-      this.#loadMoreButton.removeElement();
+      remove(this.#loadMoreButton);
     }
   };
 
@@ -49,11 +47,13 @@ export default class ListPresenter {
     const editForm = new EditFormView(point);
 
     const replacePointToEditForm = () => {
-      this.#listComponent.element.replaceChild(editForm.element, pointComponent.element);
+      // this.#listComponent.element.replaceChild(editForm.element, pointComponent.element);
+      replace(editForm, pointComponent);
     };
 
     const replaceEditFormToPoint = () => {
-      this.#listComponent.element.replaceChild(pointComponent.element, editForm.element);
+      // this.#listComponent.element.replaceChild(pointComponent.element, editForm.element);
+      replace(pointComponent, editForm);
     };
 
     const onEscKeyDown = (evt) => {
@@ -64,30 +64,33 @@ export default class ListPresenter {
       }
     };
 
-    editForm.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+    // editForm.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+    editForm.setEditClickHandler( () => {
       replaceEditFormToPoint();
     });
 
-    pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+    // pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+    pointComponent.setEditClickHandler(() => {
       replacePointToEditForm();
       document.addEventListener('keydown', onEscKeyDown);
     });
 
-    editForm.element.addEventListener('submit', (evt) => {
-      evt.preventDefault();
+    // editForm.element.addEventListener('submit', (evt) => {
+    //   evt.preventDefault();
+    editForm.setFormSubmitHandler(() => {
       replaceEditFormToPoint();
+
     });
-    // сделать див кнопки под ul и вставить в рендере afterend
-    render(pointComponent, this.#listComponent.element);
+    // сделать див кнопки под ul
+    render(pointComponent, this.#listComponent.element, RenderPosition.BEFOREBEGIN);
   };
 
   #renderList = () => {
-    render (this.#createFormComponent, this.#listContainer);
+    // render (this.#createFormComponent, this.#listContainer);
     render(this.#listComponent, this.#listContainer);
     // render(new CreateFormView(this.#listPoint[0]), this.#createFormComponent.element);
 
     if (this.#listPoint.every((point) => point.isArchive)) {
-      // домашка:
       render(this.#noPointView, this.#listComponent.element);
     } else {
 
@@ -97,7 +100,8 @@ export default class ListPresenter {
       if (this.#listPoint.length > POINT_COUNT_PER_STEP) {
         render(this.#loadMoreButton, this.#listComponent.element);
       }
-      this.#loadMoreButton.element.addEventListener('click', this.#handleLoadMoreButtonClick);
+      // this.#loadMoreButton.element.addEventListener('click', this.#handleLoadMoreButtonClick);
+      this.#loadMoreButton.setClickHandler(this.#handleLoadMoreButtonClick);
     }
   };
 }

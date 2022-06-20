@@ -1,4 +1,11 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
+
+const BLANK_POINT = {
+  description: '',
+  dueDate: null,
+  isArchive: false,
+  isFavorite: false,
+};
 
 const createEditFormViewTemplate = (point = {}) => {
   const {description ='', offers = ''} = point;
@@ -160,26 +167,34 @@ const createEditFormViewTemplate = (point = {}) => {
 </form>`);
 };
 
-export default class EditFormView {
-  #element = null;
-
-  constructor(point) {
-    this.point = point;
+export default class EditFormView extends AbstractView {
+  #point = null;
+  constructor(point = BLANK_POINT) {
+    super();
+    this.#point = point;
   }
 
   get template() {
-    return createEditFormViewTemplate(this.point);
+    return createEditFormViewTemplate(this.#point);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
+  setFormSubmitHandler = (callback) => {
+    this._callback.formSubmit = callback;
+    this.element.addEventListener('submit', this.#formSubmitHandler);
+  };
 
-    return this.#element;
-  }
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.formSubmit();
+  };
 
-  removeElement() {
-    this.#element = null;
-  }
+  setEditClickHandler = (callback) => {
+    this._callback.editClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+  };
+
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.editClick();
+  };
 }
