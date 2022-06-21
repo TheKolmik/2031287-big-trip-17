@@ -1,10 +1,10 @@
 const COLORS = ['black', 'yellow', 'blue', 'green', 'pink'];
 
 const FilterType = {
-  ALL: 'all',
-  OVERDUE: 'overdue',
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
   TODAY: 'today',
-  FAVORITES: 'favorites',
+  PAST: 'past',
   REPEATING: 'repeating',
   ARCHIVE: 'archive',
 };
