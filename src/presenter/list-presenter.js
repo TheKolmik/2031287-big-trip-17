@@ -1,12 +1,9 @@
-import {render, replace, remove} from '../framework/render.js';
-// import CreateFormView from '../view/create-form-view.js';
-import EditFormView from '../view/edit-form-view.js';
-import Point from '../view/point-view.js';
+import {render, RenderPosition, remove} from '../framework/render.js';
 import EventListView from '../view/events-list-view.js';
-// import {FormListView}  from '../view/events-list-view.js';
 import LoadMoreButton from '../view/load-more-button-view.js';
 import NoPointView from '../view/no-point-view.js';
-import {RenderPosition} from '../framework/render.js';
+import PointPresenter from './point-presenter.js';
+import {updateItem} from '../utils/common.js';
 
 const POINT_COUNT_PER_STEP = 8;
 
@@ -18,7 +15,8 @@ export default class ListPresenter {
   #noPointView = new NoPointView();
   #listContainer = null;
   #pointModel = null;
-  #listPoint = null;
+  #listPoint = [];
+  #pointPresenter = new Map();
 
   constructor(listContainer, pointModel) {
     this.#listContainer = listContainer;
@@ -31,9 +29,8 @@ export default class ListPresenter {
   };
 
   #handleLoadMoreButtonClick = () => {
-    this.#listPoint
-      .slice(this.#renderPointCount, this.#renderPointCount + POINT_COUNT_PER_STEP)
-      .forEach((task) => this.#renderPoint(task));
+
+    this.#renderPoints(this.#renderPointCount, this.#renderPointCount + POINT_COUNT_PER_STEP);
 
     this.#renderPointCount += POINT_COUNT_PER_STEP;
 
@@ -42,66 +39,64 @@ export default class ListPresenter {
     }
   };
 
-  #renderPoint = (point) => {
-    const pointComponent = new Point(point);
-    const editForm = new EditFormView(point);
-
-    const replacePointToEditForm = () => {
-      // this.#listComponent.element.replaceChild(editForm.element, pointComponent.element);
-      replace(editForm, pointComponent);
-    };
-
-    const replaceEditFormToPoint = () => {
-      // this.#listComponent.element.replaceChild(pointComponent.element, editForm.element);
-      replace(pointComponent, editForm);
-    };
-
-    const onEscKeyDown = (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
-        evt.preventDefault();
-        replaceEditFormToPoint();
-        document.removeEventListener('keydown', onEscKeyDown);
-      }
-    };
-
-    // editForm.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
-    editForm.setEditClickHandler( () => {
-      replaceEditFormToPoint();
-    });
-
-    // pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
-    pointComponent.setEditClickHandler(() => {
-      replacePointToEditForm();
-      document.addEventListener('keydown', onEscKeyDown);
-    });
-
-    // editForm.element.addEventListener('submit', (evt) => {
-    //   evt.preventDefault();
-    editForm.setFormSubmitHandler(() => {
-      replaceEditFormToPoint();
-
-    });
-    // сделать див кнопки под ul
-    render(pointComponent, this.#listComponent.element, RenderPosition.BEFOREBEGIN);
+  #handlePointChange = (updatedPoint) => {
+    console.log(this.#listPoint);
+    this.#listPoint = updateItem(this.#listPoint, updatedPoint);
+    this.#pointPresenter.get(updatedPoint.id).init(updatedPoint);
+    console.log(this.#listPoint);
   };
 
+  #renderPoint = (point) => {
+    const pointPresenter = new PointPresenter(this.#listComponent, this.#handlePointChange);
+    pointPresenter.init(point);
+    this.#pointPresenter.set(point.id, pointPresenter);
+  };
+
+  #renderPoints = (from, to) => {
+    this.#listPoint
+      .slice(from,to)
+      .forEach((point) => this.#renderPoint(point));
+  };
+
+  #clearPointList = () => {
+    this.#pointPresenter.forEach((presenter) => presenter.destroy());
+    this.#pointPresenter.clear();
+    this.#renderPointCount = POINT_COUNT_PER_STEP;
+    remove(this.#loadMoreButton);
+  };
+
+  #renderNoPoints = () => {
+    render(this.#noPointView, this.#listComponent.element, RenderPosition.AFTERBEGIN);
+  };
+
+  #renderLoadMoreButton = () => {
+
+    render(this.#loadMoreButton, this.#listComponent.element);
+
+    this.#loadMoreButton.setClickHandler(this.#handleLoadMoreButtonClick);
+  };
+
+  //
+  #renderPointList = () => {
+    render(this.#listComponent,  this.#listContainer);
+    this.#renderPoints(0, Math.min(this.#listPoint.length, POINT_COUNT_PER_STEP));
+
+    if (this.#listPoint.length > POINT_COUNT_PER_STEP ){
+      this.#renderLoadMoreButton();
+    }
+  };
+
+
   #renderList = () => {
-    // render (this.#createFormComponent, this.#listContainer);
     render(this.#listComponent, this.#listContainer);
-    // render(new CreateFormView(this.#listPoint[0]), this.#createFormComponent.element);
 
     if (this.#listPoint.every((point) => point.isArchive)) {
-      render(this.#noPointView, this.#listComponent.element);
-    } else {
+      this.#renderNoPoints();
+      return;
 
-      for (let i = 0; i < Math.min(this.#listPoint.length, POINT_COUNT_PER_STEP); i++){
-        this.#renderPoint(this.#listPoint[i]);
-      }
-      if (this.#listPoint.length > POINT_COUNT_PER_STEP) {
-        render(this.#loadMoreButton, this.#listComponent.element);
-      }
-      // this.#loadMoreButton.element.addEventListener('click', this.#handleLoadMoreButtonClick);
-      this.#loadMoreButton.setClickHandler(this.#handleLoadMoreButtonClick);
     }
+
+    this.#renderPointList();
+
   };
 }

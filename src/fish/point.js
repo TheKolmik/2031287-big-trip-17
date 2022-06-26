@@ -1,4 +1,5 @@
 import {getRandomInteger} from '../utils/common.js';
+import {nanoid} from 'nanoid';
 
 const generatePointType = () => {
   const pointType = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
@@ -64,11 +65,11 @@ const generateDate = () => {
 };
 
 export const generatePoint = () => ({
+  'id': nanoid(),
   'basePrice': 1100,
   'date_from': '2019-07-10T22:55:56.845Z',
   'date_to': '2019-07-11T11:22:13.375Z',
   'destination': generateDestination(),
-  'id': '0',
   'isFavorite': Boolean(getRandomInteger(0,1)),
   'offers': generateOffer(),
   'type': generatePointType(),
