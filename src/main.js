@@ -1,5 +1,5 @@
 import FilterView from './view/filter-view.js';
-import SortView from './view/sort-view.js';
+// import SortView from './view/sort-view.js';
 import {render} from './framework/render.js';
 import ListPresenter from './presenter/list-presenter.js';
 import PointModel from '../src/model/point-model.js';
@@ -18,6 +18,6 @@ const filters = generateFilter(pointModel.points);
 
 render(new FilterView(filters), tripFilters);
 
-render(new SortView(), tripEvents);
+// render(new SortView(), tripEvents);
 
 listPresenter.init();

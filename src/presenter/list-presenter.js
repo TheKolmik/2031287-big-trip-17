@@ -4,6 +4,9 @@ import LoadMoreButton from '../view/load-more-button-view.js';
 import NoPointView from '../view/no-point-view.js';
 import PointPresenter from './point-presenter.js';
 import {updateItem} from '../utils/common.js';
+import SortView from '../view/sort-view.js';
+import {sortPointUp, sortPointDown} from '../utils/point.js';
+import {SortType} from '../const.js';
 
 const POINT_COUNT_PER_STEP = 8;
 
@@ -17,6 +20,9 @@ export default class ListPresenter {
   #pointModel = null;
   #listPoint = [];
   #pointPresenter = new Map();
+  #sortView = new SortView();
+  #currentSortType = SortType.DAY;
+  #sourcedBoardPoints = [];
 
   constructor(listContainer, pointModel) {
     this.#listContainer = listContainer;
@@ -25,6 +31,10 @@ export default class ListPresenter {
 
   init = () => {
     this.#listPoint = [...this.#pointModel.point];
+    // 1. В отличии от сортировки по любому параметру,
+    // исходный порядок можно сохранить только одним способом -
+    // сохранив исходный массив:
+    this.#sourcedBoardPoints = [...this.#pointModel.point];
     this.#renderList();
   };
 
@@ -39,15 +49,55 @@ export default class ListPresenter {
     }
   };
 
+  #handleModeChange = () => {
+    this.#pointPresenter.forEach((presenter) => presenter.resetView());
+  };
+
   #handlePointChange = (updatedPoint) => {
-    console.log(this.#listPoint);
     this.#listPoint = updateItem(this.#listPoint, updatedPoint);
+    this.#sourcedBoardPoints = updateItem(this.#sourcedBoardPoints, updatedPoint);
     this.#pointPresenter.get(updatedPoint.id).init(updatedPoint);
-    console.log(this.#listPoint);
+  };
+
+  #sortPoints = (sortType) => {
+    // 2. Этот исходный массив задач необходим,
+    // потому что для сортировки мы будем мутировать
+    // массив в свойстве _boardTasks
+    switch (sortType) {
+      case SortType.TIME:
+        this.#listPoint.sort(sortPointUp);
+        break;
+      case SortType.PRICE:
+        this.#listPoint.sort(sortPointDown);
+        break;
+      default:
+        // 3. А когда пользователь захочет "вернуть всё, как было",
+        // мы просто запишем в _boardTasks исходный массив
+        this.#listPoint = [...this.#sourcedBoardPoints];
+    }
+
+    this.#currentSortType = sortType;
+  };
+
+  #handleSortTypeChange = (sortType) => {
+    // - Сортируем задачи
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+    this.#sortPoints(sortType);
+    // - Очищаем список
+    this.#clearPointList();
+    // - Рендерим список заново
+    this.#renderPointList();
+  };
+
+  #renderSort = () => {
+    render(this.#sortView, this.#listComponent.element, RenderPosition.BEFOREBEGIN);
+    this.#sortView.setSortTypeChangeHandler(this.#handleSortTypeChange);
   };
 
   #renderPoint = (point) => {
-    const pointPresenter = new PointPresenter(this.#listComponent, this.#handlePointChange);
+    const pointPresenter = new PointPresenter(this.#listComponent, this.#handlePointChange, this.#handleModeChange);
     pointPresenter.init(point);
     this.#pointPresenter.set(point.id, pointPresenter);
   };
@@ -66,12 +116,12 @@ export default class ListPresenter {
   };
 
   #renderNoPoints = () => {
-    render(this.#noPointView, this.#listComponent.element, RenderPosition.AFTERBEGIN);
+    render(this.#noPointView, this.#listComponent.element);
   };
 
   #renderLoadMoreButton = () => {
 
-    render(this.#loadMoreButton, this.#listComponent.element);
+    render(this.#loadMoreButton, this.#listContainer);
 
     this.#loadMoreButton.setClickHandler(this.#handleLoadMoreButtonClick);
   };
@@ -95,7 +145,7 @@ export default class ListPresenter {
       return;
 
     }
-
+    this.#renderSort();
     this.#renderPointList();
 
   };
