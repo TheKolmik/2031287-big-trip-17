@@ -1,4 +1,6 @@
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import {humanizePointDueDate,
+} from '../utils/point.js';
 
 const BLANK_POINT = {
   description: '',
@@ -8,8 +10,10 @@ const BLANK_POINT = {
 };
 
 const createEditFormViewTemplate = (point = {}) => {
-  const {description ='', offers = ''} = point;
+  const {checkin, checkout, description ='', offers = ''} = point;
 
+  const checkIn = humanizePointDueDate(checkin);
+  const checkOut = humanizePointDueDate(checkout);
 
   return (`
 <form class="event event--edit" action="#" method="post">
@@ -87,10 +91,10 @@ const createEditFormViewTemplate = (point = {}) => {
 
     <div class="event__field-group  event__field-group--time">
       <label class="visually-hidden" for="event-start-time-1">From</label>
-      <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="18/03/19 12:25">
+      <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${checkIn} 12:25">
       —
       <label class="visually-hidden" for="event-end-time-1">To</label>
-      <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="18/03/19 13:35">
+      <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${checkOut} 13:35">
     </div>
 
     <div class="event__field-group  event__field-group--price">
@@ -167,7 +171,7 @@ const createEditFormViewTemplate = (point = {}) => {
 </form>`);
 };
 
-export default class EditFormView extends AbstractView {
+export default class EditFormView extends AbstractStatefulView {
   #point = null;
   constructor(point = BLANK_POINT) {
     super();

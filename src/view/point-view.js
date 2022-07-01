@@ -20,7 +20,7 @@ const createPointViewTemplate = (point = {}) => {
 
   return (`<li class="trip-events__item">
 <div class="event">
-  <time class="event__date" datetime="2019-03-18">${date}</time>
+  <time class="event__date" datetime="${date}">${date}</time>
   <div class="event__type">
     <img class="event__type-icon" src="img/icons/${type}.png" alt="Event type icon" width="42" height="42">
   </div>

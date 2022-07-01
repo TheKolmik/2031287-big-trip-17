@@ -74,6 +74,8 @@ export const generatePoint = () => ({
   'offers': generateOffer(),
   'type': generatePointType(),
   'description': generateDescriptions(),
-  'dueDate': generateDate()
+  'dueDate': generateDate(),
+  'checkin': generateDate(),
+  'checkout': generateDate()
 });
 
