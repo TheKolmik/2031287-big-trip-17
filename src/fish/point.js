@@ -67,8 +67,8 @@ const generateDate = () => {
 export const generatePoint = () => ({
   'id': nanoid(),
   'basePrice': 1100,
-  'date_from': '2019-07-10T22:55:56.845Z',
-  'date_to': '2019-07-11T11:22:13.375Z',
+  'timeFrom': '10:30',
+  'timeTo': '11:30',
   'destination': generateDestination(),
   'isFavorite': Boolean(getRandomInteger(0,1)),
   'offers': generateOffer(),

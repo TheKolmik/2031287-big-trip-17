@@ -6,7 +6,7 @@ import {humanizePointDueDate,
 
 const createPointViewTemplate = (point = {}) => {
   const {
-    dueDate,
+    dueDate, timeFrom, timeTo,
     type = '', offers = '', basePrice = '', isFavorite = null, destination = ''} = point;
 
   const isFavoriteClassName = isFavorite
@@ -27,9 +27,9 @@ const createPointViewTemplate = (point = {}) => {
   <h3 class="event__title">${type} ${destination}</h3>
   <div class="event__schedule">
     <p class="event__time">
-      <time class="event__start-time" datetime="2019-03-18T10:30">10:30</time>
+      <time class="event__start-time" datetime="2019-03-18T10:30">${timeFrom}</time>
       —
-      <time class="event__end-time" datetime="2019-03-18T11:00">11:00</time>
+      <time class="event__end-time" datetime="2019-03-18T11:00">${timeTo}</time>
     </p>
     <p class="event__duration">30M</p>
   </div>

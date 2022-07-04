@@ -668,6 +668,12 @@ main {
   .event__input--time {
     width: 130px;
     text-align: center; }
+    .event__input--time0 {
+      width: 130px;
+      text-align: center; }
+      .event__input--time1 {
+        width: 130px;
+        text-align: center; }
   .event__input--price {
     width: 66px; }
 

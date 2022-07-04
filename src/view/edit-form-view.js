@@ -1,6 +1,10 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import {humanizePointDueDate,
-} from '../utils/point.js';
+// import flatpickr from 'flatpickr';
+
+// import 'flatpickr/dist/flatpickr.min.css';
+
+// import {humanizePointDueDate,
+// } from '../utils/point.js';
 
 const BLANK_POINT = {
   description: '',
@@ -10,10 +14,7 @@ const BLANK_POINT = {
 };
 
 const createEditFormViewTemplate = (point = {}) => {
-  const {checkin, checkout, description ='', offers = ''} = point;
-
-  const checkIn = humanizePointDueDate(checkin);
-  const checkOut = humanizePointDueDate(checkout);
+  const {destination, basePrice, timeFrom, timeTo, type, description ='', offers = ''} = point;
 
   return (`
 <form class="event event--edit" action="#" method="post">
@@ -21,7 +22,7 @@ const createEditFormViewTemplate = (point = {}) => {
     <div class="event__type-wrapper">
       <label class="event__type  event__type-btn" for="event-type-toggle-1">
         <span class="visually-hidden">Choose event type</span>
-        <img class="event__type-icon" src="img/icons/flight.png" alt="Event type icon" width="17" height="17">
+        <img class="event__type-icon" src="img/icons/${type}.png" alt="Event type icon" width="17" height="17">
       </label>
       <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -81,7 +82,7 @@ const createEditFormViewTemplate = (point = {}) => {
       <label class="event__label  event__type-output" for="event-destination-1">
         Flight
       </label>
-      <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="Chamonix" list="destination-list-1">
+      <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1">
       <datalist id="destination-list-1">
         <option value="Amsterdam"></option>
         <option value="Geneva"></option>
@@ -91,10 +92,10 @@ const createEditFormViewTemplate = (point = {}) => {
 
     <div class="event__field-group  event__field-group--time">
       <label class="visually-hidden" for="event-start-time-1">From</label>
-      <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${checkIn} 12:25">
+      <input class="event__input  event__input--time0" id="event-start-time-1" type="text" name="event-start-time" value="${timeFrom}">
       —
       <label class="visually-hidden" for="event-end-time-1">To</label>
-      <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${checkOut} 13:35">
+      <input class="event__input  event__input--time1" id="event-end-time-1" type="text" name="event-end-time" value="${timeTo}">
     </div>
 
     <div class="event__field-group  event__field-group--price">
@@ -102,7 +103,7 @@ const createEditFormViewTemplate = (point = {}) => {
         <span class="visually-hidden">Price</span>
         €
       </label>
-      <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="160">
+      <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
     </div>
 
     <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -172,24 +173,81 @@ const createEditFormViewTemplate = (point = {}) => {
 };
 
 export default class EditFormView extends AbstractStatefulView {
-  #point = null;
   constructor(point = BLANK_POINT) {
     super();
-    this.#point = point;
+    this._state = EditFormView.parsePointToState(point);
+
+    this.#setInnerHandlers();
   }
 
   get template() {
-    return createEditFormViewTemplate(this.#point);
+    return createEditFormViewTemplate(this._state);
   }
+
+  _restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+  };
+
+  #typeToggleHandler = (evt) => {
+    evt.preventDefault();
+    this.updateElement({
+      type: evt.target.value,
+    });
+  };
+
+  reset = (point) => {
+    this.updateElement(
+      EditFormView.parsePointToState(point),
+    );
+  };
 
   setFormSubmitHandler = (callback) => {
     this._callback.formSubmit = callback;
     this.element.addEventListener('submit', this.#formSubmitHandler);
   };
 
+  #dateInputHandler = (evt) => {
+    evt.preventDefault();
+    this._setState({
+      timeFrom: evt.target.value,
+    });
+  };
+
+  #timeToInputHandler = (evt) => {
+    evt.preventDefault();
+    this._setState({
+      timeTo: evt.target.value,
+    });
+  };
+
+  #priceInputHandler = (evt) => {
+    evt.preventDefault();
+    this._setState({
+      basePrice: evt.target.value,
+    });
+  };
+
+  #destinationInputHandler = (evt) => {
+    evt.preventDefault();
+    this._setState({
+      destination: evt.target.value,
+    });
+  };
+
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.formSubmit(this.#point);
+    this._callback.formSubmit(EditFormView.parseStateToPoint(this._state));
+  };
+
+  #setInnerHandlers = () => {
+    const typeInputs = this.element.querySelectorAll('.event__type-input');
+    typeInputs.forEach((inputs) => inputs.addEventListener('input', this.#typeToggleHandler));
+    this.element.querySelector('.event__input--time0').addEventListener('input', this.#dateInputHandler);
+    this.element.querySelector('.event__input--time1').addEventListener('input', this.#timeToInputHandler);
+    this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('input', this.#destinationInputHandler);
+
   };
 
   setEditClickHandler = (callback) => {
@@ -200,5 +258,19 @@ export default class EditFormView extends AbstractStatefulView {
   #editClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.editClick();
+  };
+
+  static parsePointToState = (point) => ({
+    ...point,
+    isDueDate: point.dueDate !== null
+  });
+
+  static parseStateToPoint = (state) => {
+    const point = {...state};
+    if (!point.isDueDate) {
+      point.dueDate = null;
+    }
+    delete point.isDueDate;
+    return point;
   };
 }
